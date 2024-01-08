@@ -52,9 +52,9 @@ export function PokemonInfos({ route }) {
   };
 
   return (
-    <View className="p-2">
+    <View className="p-2 bg-neutral-800">
       <View>
-        <Text className="text-xl">{pokemonData.name}</Text>
+        <Text className="text-3xl font-bold capitalize text-white">{pokemonData.name}</Text>
       </View>
     </View>
   );

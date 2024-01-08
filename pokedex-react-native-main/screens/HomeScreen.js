@@ -30,8 +30,8 @@ export function HomeScreen({ navigation }) {
   }, [offset]);
 
   return (
-    <View className="p-2">
-      <Text className="text-3xl font-bold">Pokedex</Text>
+    <View className="p-2 bg-neutral-800">
+      <Text className="text-3xl font-bold text-white">Pokedex</Text>
       {pokemonList && (
         <FlatList
           data={pokemonList}
