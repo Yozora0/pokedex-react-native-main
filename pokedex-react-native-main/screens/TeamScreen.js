@@ -38,7 +38,7 @@ export function TeamScreen() {
     };
 
     return (
-        <ScrollView style={{ backgroundColor: "#374151" }}>
+        <ScrollView style={{ backgroundColor: "#121212" }}>
             <View style={{ padding: 16 }}>
                 <Text style={{ fontSize: 24, fontWeight: "bold", color: "white" }}>
                     My Team

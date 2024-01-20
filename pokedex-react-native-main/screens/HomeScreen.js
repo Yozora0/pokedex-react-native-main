@@ -1,57 +1,92 @@
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  FlatList,
-  Dimensions,
-} from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, TextInput, FlatList } from "react-native";
 import axios from "axios";
 import { CardPokemon } from "../components/CardPokemon";
 
 export function HomeScreen({ navigation }) {
   const [pokemonList, setPokemonList] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const limit = 20;
   const [offset, setOffset] = useState(0);
+  const [loading, setLoading] = useState(true); // Ajout d'un état de chargement
 
   const gap = 8;
 
   const fetchPokemonList = async () => {
-    const response = await axios.get(
-      `https://pokeapi.co/api/v2/pokemon/?limit=${limit}&offset=${offset}`
-    );
-    setPokemonList((prevList) => [...prevList, ...response.data.results]);
+    try {
+      const response = await axios.get(
+          `https://pokeapi.co/api/v2/pokemon/?limit=${limit}&offset=${offset}`
+      );
+      setPokemonList((prevList) => [...prevList, ...response.data.results]);
+    } finally {
+      setLoading(false); // Mettez à jour l'état de chargement après la requête
+    }
   };
 
   useEffect(() => {
     fetchPokemonList();
   }, [offset]);
 
+  const filteredPokemon = pokemonList.filter((pokemon) =>
+      pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <View className="p-2 bg-neutral-800">
-      <Text className="text-3xl font-bold text-white">Pokedex</Text>
-      {pokemonList && (
-        <FlatList
-          data={pokemonList}
-          numColumns={2}
-          contentContainerStyle={{ gap }}
-          columnWrapperStyle={{ gap }}
-          renderItem={({ item }) => (
-            <CardPokemon
-              pokemonName={item.name}
-              pokemonUrl={item.url}
-              navigation={navigation}
-            />
-          )}
-          keyExtractor={(item) => item.url}
-          onEndReached={() => {
-            setOffset(offset + limit);
-          }}
-          onEndReachedThreshold={0.5}
+      <View style={styles.container}>
+        <Text style={styles.heading}>Pokedex</Text>
+        <TextInput
+            style={styles.searchBar}
+            placeholderTextColor="white"
+            placeholder="Search Pokemon..."
+            onChangeText={(text) => setSearchTerm(text)}
+            value={searchTerm}
         />
-      )}
-    </View>
+        {!loading && filteredPokemon.length === 0 && (
+            <Text style={{ color: "white" }}>No matching Pokemon found.</Text>
+        )}
+        {filteredPokemon.length > 0 && (
+            <FlatList
+                data={filteredPokemon}
+                numColumns={2}
+                contentContainerStyle={{ gap }}
+                columnWrapperStyle={{ gap }}
+                renderItem={({ item }) => (
+                    <CardPokemon
+                        pokemonName={item.name}
+                        pokemonUrl={item.url}
+                        navigation={navigation}
+                    />
+                )}
+                keyExtractor={(item) => item.url}
+                onEndReached={() => {
+                  setOffset(offset + limit);
+                }}
+                onEndReachedThreshold={0.5}
+            />
+        )}
+      </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#121212",
+    padding: 16,
+  },
+  heading: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "white",
+    marginBottom: 10,
+  },
+  searchBar: {
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginVertical: 10,
+    color: "white",
+  },
+});

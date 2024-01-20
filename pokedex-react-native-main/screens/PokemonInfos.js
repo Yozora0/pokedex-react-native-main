@@ -125,7 +125,7 @@ export function PokemonInfos({ route, navigation }) {
   };
 
   return (
-      <ScrollView style={{ backgroundColor: "#374151" }}>
+      <ScrollView style={{ backgroundColor: "#121212" }}>
         <View style={{ padding: 16, alignItems: "center" }}>
           <Image
               source={{ uri: pokemonData.sprites.front_default }}

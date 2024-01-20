@@ -7,7 +7,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // Import pages
 import { HomeScreen } from "./screens/HomeScreen";
-import { SearchScreen } from "./screens/SearchScreen";
 import { TeamScreen } from "./screens/TeamScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
 import { PokemonInfos } from "./screens/PokemonInfos";
@@ -35,8 +34,6 @@ export default function App() {
 
               if (route.name === "Home") {
                 iconName = focused ? "ios-home" : "ios-home-outline";
-              } else if (route.name === "Search") {
-                iconName = focused ? "ios-search" : "ios-search-outline";
               } else if (route.name === "Team") {
                 iconName = focused ? "ios-people" : "ios-people-outline";
               } else if (route.name === "Settings") {
@@ -54,11 +51,6 @@ export default function App() {
           <Tab.Screen
             name="Home"
             component={HomeStack}
-            // options={{ headerShown: false }}
-          />
-          <Tab.Screen
-            name="Search"
-            component={SearchStack}
             // options={{ headerShown: false }}
           />
           <Tab.Screen
@@ -83,15 +75,6 @@ function HomeStack() {
       <Stack.Screen name="Home" component={HomeScreen}
       options={{headerStyle:{ backgroundColor: '#ef4444'}}} />
       <Stack.Screen name="Details" component={PokemonInfos}
-                    options={{headerStyle:{ backgroundColor: '#ef4444'}}}/>
-    </Stack.Navigator>
-  );
-}
-
-function SearchStack() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Search" component={SearchScreen}
                     options={{headerStyle:{ backgroundColor: '#ef4444'}}}/>
     </Stack.Navigator>
   );
