@@ -76,10 +76,23 @@ export function PokemonInfos({ route, navigation }) {
       }
     };
 
+    const updateFavoriteStatus = () => {
+      checkFavoriteStatus();
+    };
+
+    // Appeler les fonctions pour obtenir les types, les évolutions et vérifier le statut des favoris
     fetchTypes();
     fetchEvolutions();
     checkFavoriteStatus();
-  }, [pokemonData]);
+
+    // Ajouter un événement de focus pour mettre à jour le statut des favoris lorsque l'écran redevient actif
+    const unsubscribe = navigation.addListener('focus', updateFavoriteStatus);
+
+    // Nettoyer l'écouteur lors du démontage du composant
+    return () => {
+      unsubscribe();
+    };
+  }, [pokemonData, navigation]);
 
   const toggleFavorite = async () => {
     const newFavorite = {
@@ -105,7 +118,7 @@ export function PokemonInfos({ route, navigation }) {
       }
 
       await AsyncStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-      setIsFavorite(!isFavorite); // Mettez à jour immédiatement l'état
+      setIsFavorite(!isFavorite);
     } catch (error) {
       console.error('Error updating favorites:', error);
     }
