@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, Image, ScrollView } from "react-native";
+import { Text, View, Image, ScrollView, TouchableOpacity } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios";
 
-export function PokemonInfos({ route }) {
+export function PokemonInfos({ route, navigation }) {
   const pokemonData = route.params.pokemonData;
   const [types, setTypes] = useState([]);
   const [evolutions, setEvolutions] = useState([]);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
-    // Fonction pour obtenir les détails des types
     const fetchTypes = async () => {
       const typePromises = pokemonData.types.map(async (type) => {
         const response = await axios.get(type.type.url);
@@ -18,7 +20,6 @@ export function PokemonInfos({ route }) {
       setTypes(typeNames);
     };
 
-    // Fonction pour obtenir les détails des évolutions
     const fetchEvolutions = async () => {
       const speciesUrl = pokemonData.species.url;
       const response = await axios.get(speciesUrl);
@@ -27,11 +28,10 @@ export function PokemonInfos({ route }) {
       const evolutionResponse = await axios.get(evolutionChainUrl);
       const evolutionChain = evolutionResponse.data.chain;
 
-      // Récupérer les noms et les sprites des évolutions
       const getEvolutionDetails = async (evolution) => {
         try {
           const spriteResponse = await axios.get(evolution.species.url);
-          const spriteUrl = pokemonData.sprites.front_default ;
+          const spriteUrl = pokemonData.sprites.front_default;
 
           return {
             name: evolution.species.name,
@@ -63,10 +63,53 @@ export function PokemonInfos({ route }) {
       setEvolutions(evolutions);
     };
 
-    // Appel des fonctions pour obtenir les types et les évolutions
+    const checkFavoriteStatus = async () => {
+      try {
+        const storedFavorites = await AsyncStorage.getItem('favorites');
+        if (storedFavorites) {
+          const favorites = JSON.parse(storedFavorites);
+          const isPokemonFavorite = favorites.some(favorite => favorite.name === pokemonData.name);
+          setIsFavorite(isPokemonFavorite);
+        }
+      } catch (error) {
+        console.error('Error checking favorite status:', error);
+      }
+    };
+
     fetchTypes();
     fetchEvolutions();
+    checkFavoriteStatus();
   }, [pokemonData]);
+
+  const toggleFavorite = async () => {
+    const newFavorite = {
+      name: pokemonData.name,
+      sprite: pokemonData.sprites.front_default,
+    };
+
+    try {
+      let updatedFavorites = [];
+      const storedFavorites = await AsyncStorage.getItem('favorites');
+
+      if (storedFavorites) {
+        updatedFavorites = JSON.parse(storedFavorites);
+        const existingIndex = updatedFavorites.findIndex(favorite => favorite.name === newFavorite.name);
+
+        if (existingIndex !== -1) {
+          updatedFavorites.splice(existingIndex, 1);
+        } else {
+          updatedFavorites.push(newFavorite);
+        }
+      } else {
+        updatedFavorites.push(newFavorite);
+      }
+
+      await AsyncStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+      setIsFavorite(!isFavorite); // Mettez à jour immédiatement l'état
+    } catch (error) {
+      console.error('Error updating favorites:', error);
+    }
+  };
 
   return (
       <ScrollView style={{ backgroundColor: "#374151" }}>
@@ -75,6 +118,9 @@ export function PokemonInfos({ route }) {
               source={{ uri: pokemonData.sprites.front_default }}
               style={{ width: 150, height: 150, marginBottom: 16 }}
           />
+          <TouchableOpacity onPress={toggleFavorite} style={{ position: 'absolute', top: 16, right: 16 }}>
+            <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={32} color={isFavorite ? 'red' : 'white'} />
+          </TouchableOpacity>
           <Text style={{ fontSize: 24, fontWeight: "bold", color: "white", textTransform: "capitalize" }}>
             {pokemonData.name}
           </Text>
