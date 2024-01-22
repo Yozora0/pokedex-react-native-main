@@ -8,7 +8,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 // Import pages
 import { HomeScreen } from "./screens/HomeScreen";
 import { TeamScreen } from "./screens/TeamScreen";
-import { SettingsScreen } from "./screens/SettingsScreen";
 import { PokemonInfos } from "./screens/PokemonInfos";
 import {Screen} from "react-native-screens";
 
@@ -36,11 +35,8 @@ export default function App() {
                 iconName = focused ? "ios-home" : "ios-home-outline";
               } else if (route.name === "Team") {
                 iconName = focused ? "ios-people" : "ios-people-outline";
-              } else if (route.name === "Settings") {
-                iconName = focused ? "ios-cog" : "ios-cog-outline";
               }
 
-              // You can return any component that you like here!
               return <Ionicons name={iconName} size={size} color={color} />;
             },
             tabBarActiveTintColor: "#ef4444",
@@ -55,12 +51,7 @@ export default function App() {
           />
           <Tab.Screen
             name="Team"
-            component={TeamScreen}
-            // options={{ headerShown: false }}
-          />
-          <Tab.Screen
-            name="Settings"
-            component={SettingsScreen}
+            component={TeamStack}
             // options={{ headerShown: false }}
           />
         </Tab.Navigator>
@@ -82,10 +73,12 @@ function HomeStack() {
 
 function TeamStack() {
     return (
-        <Tab.Navigator>
+        <Stack.Navigator>
             <Stack.Screen name="Team" component={TeamScreen}
                           options={{ headerStyle: { backgroundColor: '#ef4444' } }} />
-        </Tab.Navigator>
+        </Stack.Navigator>
     );
 }
+
+
 

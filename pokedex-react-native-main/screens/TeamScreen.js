@@ -18,7 +18,6 @@ export function TeamScreen() {
         }
     };
 
-    // Utilisez useFocusEffect pour mettre à jour les favoris chaque fois que l'écran est en premier plan
     useFocusEffect(
         useCallback(() => {
             fetchFavorites();

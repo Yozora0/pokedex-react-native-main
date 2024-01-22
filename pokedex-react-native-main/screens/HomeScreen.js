@@ -6,10 +6,9 @@ import { CardPokemon } from "../components/CardPokemon";
 export function HomeScreen({ navigation }) {
   const [pokemonList, setPokemonList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const limit = 20;
+  const [loading, setLoading] = useState(true);
   const [offset, setOffset] = useState(0);
-  const [loading, setLoading] = useState(true); // Ajout d'un état de chargement
-
+  const limit = 20;
   const gap = 8;
 
   const fetchPokemonList = async () => {
@@ -19,13 +18,25 @@ export function HomeScreen({ navigation }) {
       );
       setPokemonList((prevList) => [...prevList, ...response.data.results]);
     } finally {
-      setLoading(false); // Mettez à jour l'état de chargement après la requête
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchPokemonList();
   }, [offset]);
+
+  const loadMorePokemon = () => {
+    setOffset(offset + limit);
+  };
+
+  const renderPokemon = ({ item }) => (
+      <CardPokemon
+          pokemonName={item.name}
+          pokemonUrl={item.url}
+          navigation={navigation}
+      />
+  );
 
   const filteredPokemon = pokemonList.filter((pokemon) =>
       pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -44,26 +55,16 @@ export function HomeScreen({ navigation }) {
         {!loading && filteredPokemon.length === 0 && (
             <Text style={{ color: "white" }}>No matching Pokemon found.</Text>
         )}
-        {filteredPokemon.length > 0 && (
-            <FlatList
-                data={filteredPokemon}
-                numColumns={2}
-                contentContainerStyle={{ gap }}
-                columnWrapperStyle={{ gap }}
-                renderItem={({ item }) => (
-                    <CardPokemon
-                        pokemonName={item.name}
-                        pokemonUrl={item.url}
-                        navigation={navigation}
-                    />
-                )}
-                keyExtractor={(item) => item.url}
-                onEndReached={() => {
-                  setOffset(offset + limit);
-                }}
-                onEndReachedThreshold={0.5}
-            />
-        )}
+        <FlatList
+            data={filteredPokemon}
+            numColumns={2}
+            contentContainerStyle={{ gap }}
+            columnWrapperStyle={{ gap }}
+            renderItem={renderPokemon}
+            keyExtractor={(item) => item.url}
+            onEndReached={loadMorePokemon}
+            onEndReachedThreshold={0.5}
+        />
       </View>
   );
 }
