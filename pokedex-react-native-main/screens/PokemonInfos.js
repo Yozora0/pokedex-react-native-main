@@ -31,7 +31,7 @@ export function PokemonInfos({ route, navigation }) {
       const getEvolutionDetails = async (evolution) => {
         try {
           const spriteResponse = await axios.get(evolution.species.url);
-          const spriteUrl = pokemonData.sprites.front_default;
+          const spriteUrl = spriteResponse.data.sprites;
 
           return {
             name: evolution.species.name,
@@ -80,15 +80,12 @@ export function PokemonInfos({ route, navigation }) {
       checkFavoriteStatus();
     };
 
-    // Appeler les fonctions pour obtenir les types, les évolutions et vérifier le statut des favoris
     fetchTypes();
     fetchEvolutions();
     checkFavoriteStatus();
 
-    // Ajouter un événement de focus pour mettre à jour le statut des favoris lorsque l'écran redevient actif
     const unsubscribe = navigation.addListener('focus', updateFavoriteStatus);
 
-    // Nettoyer l'écouteur lors du démontage du composant
     return () => {
       unsubscribe();
     };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TextInput, FlatList } from "react-native";
+import { StyleSheet, Text, View, TextInput, FlatList, ActivityIndicator } from "react-native";
 import axios from "axios";
 import { CardPokemon } from "../components/CardPokemon";
 
@@ -7,28 +7,19 @@ export function HomeScreen({ navigation }) {
   const [pokemonList, setPokemonList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-  const [offset, setOffset] = useState(0);
-  const limit = 20;
-  const gap = 8;
 
-  const fetchPokemonList = async () => {
+  const fetchAllPokemon = async () => {
     try {
-      const response = await axios.get(
-          `https://pokeapi.co/api/v2/pokemon/?limit=${limit}&offset=${offset}`
-      );
-      setPokemonList((prevList) => [...prevList, ...response.data.results]);
+      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/?limit=1000`);
+      setPokemonList(response.data.results);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchPokemonList();
-  }, [offset]);
-
-  const loadMorePokemon = () => {
-    setOffset(offset + limit);
-  };
+    fetchAllPokemon();
+  }, []);
 
   const renderPokemon = ({ item }) => (
       <CardPokemon
@@ -58,12 +49,10 @@ export function HomeScreen({ navigation }) {
         <FlatList
             data={filteredPokemon}
             numColumns={2}
-            contentContainerStyle={{ gap }}
-            columnWrapperStyle={{ gap }}
+            contentContainerStyle={{ gap: 8 }}
+            columnWrapperStyle={{ gap: 8 }}
             renderItem={renderPokemon}
             keyExtractor={(item) => item.url}
-            onEndReached={loadMorePokemon}
-            onEndReachedThreshold={0.5}
         />
       </View>
   );
