@@ -32,7 +32,7 @@ Make sure you have Node.js and npm installed on your machine.
 
 ```bash
 git clone https://github.com/your-username/pokedex-react-native.git
-cd pokedex-react-native
+cd pokedex-react-native-main
 ```
 
 2. Install dependencies :
