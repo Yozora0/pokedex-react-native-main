@@ -7,10 +7,10 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // Import pages
 import { HomeScreen } from "./screens/HomeScreen";
-import { SearchScreen } from "./screens/SearchScreen";
 import { TeamScreen } from "./screens/TeamScreen";
-import { SettingsScreen } from "./screens/SettingsScreen";
 import { PokemonInfos } from "./screens/PokemonInfos";
+import { SettingsScreen } from "./screens/SettingsScreen";
+import {Screen} from "react-native-screens";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -23,7 +23,7 @@ export default function App() {
           screenOptions={({ route }) => ({
             headerShown: false,
             tabBarStyle: {
-              backgroundColor: "#fff",
+              backgroundColor: "#262626",
               paddingTop: 10,
             },
             style: {
@@ -34,19 +34,16 @@ export default function App() {
 
               if (route.name === "Home") {
                 iconName = focused ? "ios-home" : "ios-home-outline";
-              } else if (route.name === "Search") {
-                iconName = focused ? "ios-search" : "ios-search-outline";
               } else if (route.name === "Team") {
                 iconName = focused ? "ios-people" : "ios-people-outline";
-              } else if (route.name === "Settings") {
-                iconName = focused ? "ios-cog" : "ios-cog-outline";
+              } else if (route.name === "Settings"){
+                  iconName = focused ? "ios-cog" : "ios-cog-outline";
               }
 
-              // You can return any component that you like here!
               return <Ionicons name={iconName} size={size} color={color} />;
             },
             tabBarActiveTintColor: "#ef4444",
-            tabBarInactiveTintColor: "#64748b",
+            tabBarInactiveTintColor: "#ffffff",
           })}
           sceneContainerStyle={{ backgroundColor: "transparent" }}
         >
@@ -56,20 +53,15 @@ export default function App() {
             // options={{ headerShown: false }}
           />
           <Tab.Screen
-            name="Search"
-            component={SearchStack}
-            // options={{ headerShown: false }}
-          />
-          <Tab.Screen
             name="Team"
-            component={TeamScreen}
+            component={TeamStack}
             // options={{ headerShown: false }}
           />
-          <Tab.Screen
-            name="Settings"
-            component={SettingsScreen}
-            // options={{ headerShown: false }}
-          />
+            <Tab.Screen
+                name="Settings"
+                component={SettingsStack}
+                // options={{ headerShown: false }}
+            />
         </Tab.Navigator>
       </NavigationContainer>
     </>
@@ -79,16 +71,31 @@ export default function App() {
 function HomeStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="Details" component={PokemonInfos} />
+      <Stack.Screen name="Home" component={HomeScreen}
+      options={{headerStyle:{ backgroundColor: '#ef4444'}}} />
+      <Stack.Screen name="Details" component={PokemonInfos}
+                    options={{headerStyle:{ backgroundColor: '#ef4444'}}}/>
     </Stack.Navigator>
   );
 }
 
-function SearchStack() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Search" component={SearchScreen} />
-    </Stack.Navigator>
-  );
+function TeamStack() {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen name="Team" component={TeamScreen}
+                          options={{ headerStyle: { backgroundColor: '#ef4444' } }} />
+        </Stack.Navigator>
+    );
 }
+
+function SettingsStack() {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen name="Settings" component={SettingsScreen}
+                          options={{ headerStyle: { backgroundColor: '#ef4444' } }} />
+        </Stack.Navigator>
+    );
+}
+
+
+
