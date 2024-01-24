@@ -40,7 +40,7 @@ cd pokedex-react-native
 npm install 
 ```
 
-.3 Start the project :
+3. Start the project :
 ```bash
 npx expo start
 ```
