@@ -32,7 +32,7 @@ export default function App() {
             tabBarIcon: ({ focused, color, size }) => {
               let iconName;
 
-              if (route.name === "Home") {
+              if (route.name === "Pokedex") {
                 iconName = focused ? "ios-home" : "ios-home-outline";
               } else if (route.name === "Team") {
                 iconName = focused ? "ios-people" : "ios-people-outline";
@@ -48,7 +48,7 @@ export default function App() {
           sceneContainerStyle={{ backgroundColor: "transparent" }}
         >
           <Tab.Screen
-            name="Home"
+            name="Pokedex"
             component={HomeStack}
             // options={{ headerShown: false }}
           />
@@ -82,7 +82,7 @@ function HomeStack() {
 function TeamStack() {
     return (
         <Stack.Navigator>
-            <Stack.Screen name="Team" component={TeamScreen}
+            <Stack.Screen name="Favorites" component={TeamScreen}
                           options={{ headerStyle: { backgroundColor: '#ef4444' } }} />
         </Stack.Navigator>
     );
@@ -91,7 +91,7 @@ function TeamStack() {
 function SettingsStack() {
     return (
         <Stack.Navigator>
-            <Stack.Screen name="Settings" component={SettingsScreen}
+            <Stack.Screen name="Profile" component={SettingsScreen}
                           options={{ headerStyle: { backgroundColor: '#ef4444' } }} />
         </Stack.Navigator>
     );
