@@ -29,21 +29,9 @@ export function PokemonInfos({ route, navigation }) {
       const evolutionChain = evolutionResponse.data.chain;
 
       const getEvolutionDetails = async (evolution) => {
-        try {
-          const spriteResponse = await axios.get(evolution.species.url);
-          const spriteUrl = spriteResponse.data.sprites;
-
-          return {
-            name: evolution.species.name,
-            sprite: spriteUrl,
-          };
-        } catch (error) {
-          console.error("Error fetching evolution sprite:", error);
-          return {
-            name: evolution.species.name,
-            sprite: "",
-          };
-        }
+        return {
+          name: evolution.species.name,
+        };
       };
 
       const evolutions = [];
@@ -137,31 +125,31 @@ export function PokemonInfos({ route, navigation }) {
         </View>
         <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
           <Text style={{ fontSize: 18, color: "white" }}>
-            Height: {pokemonData.height} dm
+            Height: {pokemonData.height} decimetres
           </Text>
           <Text style={{ fontSize: 18, color: "white" }}>
-            Weight: {pokemonData.weight} hg
+            Weight: {pokemonData.weight} hectograms
           </Text>
           <Text style={{ fontSize: 18, color: "white" }}>
-            Types: {types.join(", ")}
+            Type(s): {types.join(", ")}
           </Text>
           <Text style={{ fontSize: 18, color: "white", marginTop: 8 }}>
-            Evolutions:
+            Species & Evolution(s):
           </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }}>
             <View style={{ flexDirection: "row" }}>
-              {evolutions.map((evolution) => (
-                  <View key={evolution.name} style={{ flexDirection: "column", alignItems: "center", marginRight: 16 }}>
-                    <Image
-                        source={{ uri: evolution.sprite }}
-                        style={{ width: 50, height: 50, marginBottom: 8 }}
-                    />
+              {evolutions.map((evolution, index) => (
+                  <React.Fragment key={evolution.name}>
+                    {index !== 0 && (
+                        <Text style={{ fontSize: 16, color: "white", marginHorizontal: 4 }}>&rarr;</Text>
+                    )}
                     <Text style={{ fontSize: 16, color: "white", textTransform: "capitalize" }}>
                       {evolution.name}
                     </Text>
-                  </View>
+                  </React.Fragment>
               ))}
             </View>
+
           </ScrollView>
         </View>
       </ScrollView>
